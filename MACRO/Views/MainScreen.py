@@ -1,9 +1,13 @@
 from tkinter import *
 from tkinter import ttk, messagebox
-import importlib, os
+import importlib
+import os
+from Views.Configs import *
+
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ConfigsModel = importlib.import_module("Model.Configs", package=parent_dir)
-ConfigsController = importlib.import_module("Controller.ConfigsController", package=parent_dir)
+ConfigsController = importlib.import_module(
+    "Controller.ConfigsController", package=parent_dir)
 
 class MainScreen():
     def __init__(self, master: Tk):
@@ -14,8 +18,9 @@ class MainScreen():
         self.main_screen = master
         #
         self.configs = ConfigsModel.Configs()
+
         self.configsController = ConfigsController.ConfigsController()
-        self.configsController.get_press_key()
+
         # definindo tamanho da janela
         self.main_screen.geometry("350x180")
         # bloqueando redimensionamento
@@ -39,14 +44,18 @@ class MainScreen():
         frm = ttk.Frame(self.main_screen, padding=0)
         frm.grid(sticky=EW, columnspan=3, pady=(0, 10))
 
-        ttk.Button(frm, text="Gravar ["+self.configs.keys["presets-keys"]["gravar"]+"]", command=lambda: print(
-            "gravando comandos")).grid(column=0, row=0)
+        self.button_gravar = StringVar()
+        self.button_gravar.set(self.configs.keys["presets-keys"]["gravar"])
+        ttk.Button(frm, textvariable=self.button_gravar,
+                   command=lambda: print("TESTE")).grid(column=0, row=0)
 
-        ttk.Button(frm, text="Executar ["+self.configs.keys["presets-keys"]["iniciar"]+"]", command=lambda: print("Executando comandos")).grid(
-            column=1, row=0)
+        self.button_executar = StringVar()
+        self.button_executar.set(self.configs.keys["presets-keys"]["iniciar"])
+        ttk.Button(frm, textvariable=self.button_executar, command=lambda: print(
+            "Executando comandos")).grid(column=1, row=0)
 
         ttk.Button(frm, text="Configurações",
-                   command=self.janela_configuracoes).grid(column=2, row=0, sticky=E, padx=(110, 0))
+                   command=lambda *x: self.janela_configuracoes()).grid(column=2, row=0, sticky=E, padx=(110, 0))
 
     def colocar_presets(self):
         # cria um frame
@@ -119,103 +128,13 @@ class MainScreen():
             self.presets.append("New Preset")
             self.atualizar_all_widgets()
 
-    # funcao abre uma janela filha de main_screen de configurações
     def janela_configuracoes(self):
-        self.child_window = Toplevel(self.main_screen)
-        self.child_window.title("Configurações")
-        self.child_window.resizable(False, False)
-        self.child_window.geometry("225x210")
-        # bloquear a janela principal
-        self.child_window.grab_set()
+        janela_configs = Configs(self.configs, self.main_screen)
+        janela_configs.janela_configuracoes()
 
-        # definir o método destruir para a janela filha
-        self.child_window.protocol(
-            "WM_DELETE_WINDOW", lambda *x: self.on_child_window_close(btn_gravar.get(), btn_iniciar.get(), num_repeticao.get(), selected.get()))
-
-        # cria um frame para configurar botoes
-        frame_botoes = ttk.Frame(self.child_window, padding=0)
-        frame_botoes.grid(rowspan=2, columnspan=3, pady=(0, 15))
-
-        # Adiciona um label ao botão de setar tecla para gravar
-        Label(frame_botoes, text="Tecla para inciar gravação:").grid(
-            column=0, row=0, pady=(0, 20))
-
-        # botão de escolher tecla de gravar
-        ttk.Button(frame_botoes, text="["+self.configs.keys["presets-keys"]["gravar"]+"]", command=lambda: print(
-            "aperte uma tecla...")).grid(column=1, row=0, pady=(0, 20))
-        # variavel que grava o valor do botao de gravar
-        btn_gravar = StringVar()
-        btn_gravar.set(self.configs.keys["presets-keys"]["gravar"])
-
-        # Adiciona um label ao botão de setar tecla para iniciar comandos
-        Label(frame_botoes, text="Tecla para inciar repetição:").grid(
-            column=0, row=1)
-
-        # botão escolher tecla de repetir comandos
-        ttk.Button(frame_botoes, text="["+self.configs.keys["presets-keys"]["iniciar"]+"]", command=lambda: print(
-            "aperte uma tecla...")).grid(column=1, row=1)
-        # variavel que grava o valor do botao de gravar
-        btn_iniciar = StringVar()
-        btn_iniciar.set(self.configs.keys["presets-keys"]["iniciar"])
-
-        # cria um frame para configuração de repetiçaõ
-        frame_repeticao = ttk.Frame(self.child_window, padding=0)
-        frame_repeticao.grid(sticky="w", rowspan=3, columnspan=3, pady=(0, 10))
-
-        # Adiciona um label ao botão de setar tecla para iniciar comandos
-        Label(frame_repeticao, text="Quantas vezes vai repetir:").grid(
-            sticky="w")
-
-        num_repeticao = IntVar()
-        num_repeticao.set(self.configs.keys["qt_repetir"])
-        input_repeticao = ttk.Entry(
-            frame_repeticao, textvariable=num_repeticao)
-
-        selected = BooleanVar()
-        selected.set(self.configs.keys["repetir"])
-
-        def mostrar_esconder_num():
-            if selected.get():
-                input_repeticao.grid_forget()
-            else:
-                input_repeticao.grid(sticky=SW, padx=(2, 0))
-                num_repeticao.set(self.configs.keys["qt_repetir"])
-
-        ttk.Radiobutton(
-            frame_repeticao,
-            text="até pressionar o botao novamente",
-            value=True,
-            variable=selected,
-            command=mostrar_esconder_num
-        ).grid(row=1)
-
-        ttk.Radiobutton(
-            frame_repeticao,
-            text="Quantidade definida de vezes",
-            value=False,
-            variable=selected,
-            command=mostrar_esconder_num
-        ).grid(row=2, sticky=W)
-        input_repeticao.grid(sticky=SW, padx=(2, 0))
-        frames_janelas = ttk.Frame(self.child_window, padding=0)
-        frames_janelas.grid(sticky=SE, columnspan=3)
-        ttk.Button(frames_janelas, text="Salvar", padding=0, command=lambda *x: self.on_child_window_close(btn_gravar.get(), btn_iniciar.get(), num_repeticao.get(), selected.get())).grid(
-            column=0, row=0)
-        ttk.Button(frames_janelas, text="Cancelar", padding=0,
-                   command=self.child_window.destroy).grid(column=1, row=0)
-        mostrar_esconder_num()
-
-    # funcao que roda ao fechar janela de configurações
-    def on_child_window_close(self, *values):
-        # liberar a janela principal quando a janela filha for fechada
-        self.main_screen.grab_release()
-        self.configs.keys["presets-keys"]["gravar"] = values[0]
-        self.configs.keys["presets-keys"]["iniciar"] = values[1]
-        self.configs.keys["qt_repetir"] = values[2]
-        self.configs.keys["repetir"] = values[3]
-        # destruir a janela filha
-        self.child_window.destroy()
-        self.child_window = None
-        
-        self.configs.save()
-        print("configurações salvas")
+        def atualizar_botoes(c):
+            self.button_executar.set(
+                self.configs.keys["presets-keys"]["iniciar"])
+            self.button_gravar.set(self.configs.keys["presets-keys"]["gravar"])
+            janela_configs.child_window.unbind("<Destroy>")
+        janela_configs.child_window.bind("<Destroy>", atualizar_botoes)
