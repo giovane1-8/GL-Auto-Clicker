@@ -1,24 +1,28 @@
-from tkinter import *
-from tkinter import ttk, messagebox
-import importlib
-import os
 from Views.Configs import *
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ConfigsModel = importlib.import_module("Model.Configs", package=parent_dir)
 ConfigsController = importlib.import_module(
     "Controller.ConfigsController", package=parent_dir)
+PresetsController = importlib.import_module(
+    "Controller.PresetsController", package=parent_dir)
+PresetModel = importlib.import_module("Model.Preset", package=parent_dir)
 
-class MainScreen():
-    def __init__(self, master: Tk):
-        # propriedades
-        self.presets = ["Padrao", "teste1", "teste2"]
-        self.presets = sorted(self.presets)
+
+class MainScreen:
+    def __init__(self, master):
+
+        self.presetsController = PresetsController.PresetsController()
+
+        self.presets, self.presetsInstances = self.presetsController.initPresets()
+
         # criando janela principal
         self.main_screen = master
-        #
+
+        # Instanciando Model de configurações
         self.configs = ConfigsModel.Configs()
 
+        # Instanciando Controller de configurações
         self.configsController = ConfigsController.ConfigsController()
 
         # definindo tamanho da janela
@@ -85,7 +89,9 @@ class MainScreen():
         # criamos um input para mudar o nome do preset selecionado
         ttk.Entry(frm, textvariable=var_input_text).grid(
             row=0, column=0, padx=(4, 30), sticky=EW, ipadx=90)
-
+        # botão para salvar os presets modificados e criados
+        ttk.Button(frm, text="Salvar", padding=0,
+            command=lambda: self.presetsController.save(self.presetsInstances)).grid(sticky=E, row=1)
         # adicionamos um evento quando o nome do preset for mudado
         var_input_text.trace_add(
             "write", lambda *args: self.preset_name_update(var_input_text, var_option_menu, drop))
@@ -103,7 +109,7 @@ class MainScreen():
                 teste.pop(teste.index(name))
 
             if (len(name) < 40):
-                name = var.get()[:len(name)-1]
+                name = var.get()[:len(name) - 1]
 
             messagebox.showinfo(title="Já existe um preset com esse nome",
                                 message="Coloque outro nome para o preset")
@@ -111,7 +117,10 @@ class MainScreen():
             name = var.get()
 
         finally:
-            self.presets[self.presets.index(var_list.get())] = name
+            index = self.presets.index(var_list.get())
+            self.presetsInstances[index].nome = name
+            self.presets[index] = name
+
             var_list.set(name)
             drop['menu'].delete(0, 'end')
             # Adicione as novas opções ao menu suspenso
@@ -126,6 +135,7 @@ class MainScreen():
                                 message="Mude o nome de 'New Preset'")
         except ValueError:
             self.presets.append("New Preset")
+            self.presetsInstances.append(PresetModel.Preset("New Preset", []))
             self.atualizar_all_widgets()
 
     def janela_configuracoes(self):
@@ -137,4 +147,5 @@ class MainScreen():
                 self.configs.keys["presets-keys"]["iniciar"])
             self.button_gravar.set(self.configs.keys["presets-keys"]["gravar"])
             janela_configs.child_window.unbind("<Destroy>")
+
         janela_configs.child_window.bind("<Destroy>", atualizar_botoes)
