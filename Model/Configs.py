@@ -22,7 +22,7 @@ class Configs:
         self.listener.start()
 
     def stop_keyboard_listener(self):
-        if self.listener is not None:
+        if self.listener:
             self.listener.stop()
 
     def restart_keyboard_listener(self):

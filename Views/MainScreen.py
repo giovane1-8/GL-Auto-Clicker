@@ -59,7 +59,7 @@ class MainScreen:
             "Executando comandos")).grid(column=1, row=0)
 
         ttk.Button(frm, text="Configurações",
-                   command=lambda *x: self.janela_configuracoes()).grid(column=2, row=0, sticky=E, padx=(110, 0))
+                   command=self.janela_configuracoes).grid(column=2, row=0, sticky=E, padx=(110, 0))
 
     def colocar_presets(self):
         # cria um frame
@@ -139,6 +139,7 @@ class MainScreen:
             self.atualizar_all_widgets()
 
     def janela_configuracoes(self):
+        self.model_configs.stop_keyboard_listener()
         janela_configs = Configs(self.model_configs, self.main_screen)
         janela_configs.janela_configuracoes()
 
@@ -147,6 +148,7 @@ class MainScreen:
                 self.model_configs.keys["presets-keys"]["iniciar"])
             self.button_gravar.set(self.model_configs.keys["presets-keys"]["gravar"])
             janela_configs.child_window.unbind("<Destroy>")
+            self.model_configs.restart_keyboard_listener()
 
         janela_configs.child_window.bind("<Destroy>", atualizar_botoes)
-        self.model_configs.restart_keyboard_listener()
+
