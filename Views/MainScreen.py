@@ -20,7 +20,7 @@ class MainScreen:
         self.main_screen = master
 
         # Instanciando Model de configurações
-        self.configs = ConfigsModel.Configs()
+        self.model_configs = ConfigsModel.Configs()
 
         # Instanciando Controller de configurações
         self.configsController = ConfigsController.ConfigsController()
@@ -36,12 +36,12 @@ class MainScreen:
     def init_componentes(self):
         self.colocar_widgets()
         self.colocar_presets()
+        self.model_configs.start_keyboard_listener()
 
     def atualizar_all_widgets(self):
         for widget in self.main_screen.winfo_children():
             widget.destroy()
-        self.colocar_widgets()
-        self.colocar_presets()
+        self.init_componentes()
         print("Todos Widgets atualizados")
 
     def colocar_widgets(self):
@@ -49,12 +49,12 @@ class MainScreen:
         frm.grid(sticky=EW, columnspan=3, pady=(0, 10))
 
         self.button_gravar = StringVar()
-        self.button_gravar.set(self.configs.keys["presets-keys"]["gravar"])
+        self.button_gravar.set(self.model_configs.keys["presets-keys"]["gravar"])
         ttk.Button(frm, textvariable=self.button_gravar,
                    command=lambda: print("TESTE")).grid(column=0, row=0)
 
         self.button_executar = StringVar()
-        self.button_executar.set(self.configs.keys["presets-keys"]["iniciar"])
+        self.button_executar.set(self.model_configs.keys["presets-keys"]["iniciar"])
         ttk.Button(frm, textvariable=self.button_executar, command=lambda: print(
             "Executando comandos")).grid(column=1, row=0)
 
@@ -91,7 +91,7 @@ class MainScreen:
             row=0, column=0, padx=(4, 30), sticky=EW, ipadx=90)
         # botão para salvar os presets modificados e criados
         ttk.Button(frm, text="Salvar", padding=0,
-            command=lambda: self.presetsController.save(self.presetsInstances)).grid(sticky=E, row=1)
+                   command=lambda: self.presetsController.save(self.presetsInstances)).grid(sticky=E, row=1)
         # adicionamos um evento quando o nome do preset for mudado
         var_input_text.trace_add(
             "write", lambda *args: self.preset_name_update(var_input_text, var_option_menu, drop))
@@ -139,13 +139,14 @@ class MainScreen:
             self.atualizar_all_widgets()
 
     def janela_configuracoes(self):
-        janela_configs = Configs(self.configs, self.main_screen)
+        janela_configs = Configs(self.model_configs, self.main_screen)
         janela_configs.janela_configuracoes()
 
         def atualizar_botoes(c):
             self.button_executar.set(
-                self.configs.keys["presets-keys"]["iniciar"])
-            self.button_gravar.set(self.configs.keys["presets-keys"]["gravar"])
+                self.model_configs.keys["presets-keys"]["iniciar"])
+            self.button_gravar.set(self.model_configs.keys["presets-keys"]["gravar"])
             janela_configs.child_window.unbind("<Destroy>")
 
         janela_configs.child_window.bind("<Destroy>", atualizar_botoes)
+        self.model_configs.restart_keyboard_listener()
