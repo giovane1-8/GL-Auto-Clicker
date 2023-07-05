@@ -21,12 +21,12 @@ class Configs(object):
         self.child_window = Toplevel(self.main_screen)
         self.child_window.title("Configurações")
         self.child_window.resizable(False, False)
-        self.child_window.geometry("225x210")
+        # self.child_window.geometry("225x210")
         # bloquear a janela principal
         self.child_window.grab_set()
 
         # definir o método destruir para a janela filha
-        
+
         # cria um frame para configurar botoes
         frame_botoes = ttk.Frame(self.child_window, padding=0)
         frame_botoes.grid(rowspan=2, columnspan=3, pady=(0, 15))
@@ -39,8 +39,11 @@ class Configs(object):
         btn_gravar = StringVar()
         btn_gravar.set(self.configs.keys["presets-keys"]["gravar"])
         # botão de escolher tecla de gravar
-        ttk.Button(frame_botoes, text="["+btn_gravar.get()+"]", textvariable=btn_gravar, command=lambda: btn_gravar.set(
-            self.verifica_key(self.configsController.get_press_key(), btn_gravar.get()))).grid(column=1, row=0, pady=(0, 20))
+        ttk.Button(frame_botoes, text="[" + btn_gravar.get() + "]", textvariable=btn_gravar,
+                   command=lambda: btn_gravar.set(
+                       self.verifica_key(self.configsController.get_press_key(), btn_gravar.get()))).grid(column=1,
+                                                                                                          row=0,
+                                                                                                          pady=(0, 20))
 
         # Adiciona um label ao botão de setar tecla para iniciar comandos
         Label(frame_botoes, text="Tecla para inciar repetição:").grid(
@@ -50,8 +53,10 @@ class Configs(object):
         btn_iniciar = StringVar()
         btn_iniciar.set(self.configs.keys["presets-keys"]["iniciar"])
         # botão escolher tecla de repetir comandos
-        ttk.Button(frame_botoes, text="["+btn_iniciar.get()+"]", textvariable=btn_iniciar, command=lambda: btn_iniciar.set(
-            self.verifica_key(self.configsController.get_press_key(), btn_iniciar.get()))).grid(column=1, row=1)
+        ttk.Button(frame_botoes, text="[" + btn_iniciar.get() + "]", textvariable=btn_iniciar,
+                   command=lambda: btn_iniciar.set(
+                       self.verifica_key(self.configsController.get_press_key(), btn_iniciar.get()))).grid(column=1,
+                                                                                                           row=1)
 
         # cria um frame para configuração de repetiçaõ
         frame_repeticao = ttk.Frame(self.child_window, padding=0)
@@ -93,11 +98,14 @@ class Configs(object):
         ).grid(row=2, sticky=W)
         input_repeticao.grid(sticky=SW, padx=(2, 0))
         frames_janelas = ttk.Frame(self.child_window, padding=0)
-        frames_janelas.grid(sticky=SE, columnspan=3)
-        self.buttom_save = ttk.Button(frames_janelas, text="Salvar", padding=0, command=lambda *x: self.on_child_window_close(btn_gravar.get(), btn_iniciar.get(), num_repeticao.get(), selected.get())).grid(
+        frames_janelas.grid(sticky=SW)
+        self.buttom_save = ttk.Button(frames_janelas, text="Salvar", padding=0,
+                                      command=lambda *x: self.on_child_window_close(btn_gravar.get(), btn_iniciar.get(),
+                                                                                    num_repeticao.get(),
+                                                                                    selected.get())).grid(
             column=0, row=0)
         ttk.Button(frames_janelas, text="Cancelar", padding=0,
-                   command=self.child_window.destroy).grid(column=1, row=0)
+                   command=self.child_window.destroy).grid(column=1, row=0, sticky=SE, padx=(90, 0))
         mostrar_esconder_num()
 
     # funcao que roda ao fechar janela de configurações
@@ -112,7 +120,6 @@ class Configs(object):
 
         # destruir a janela filha
         self.child_window.destroy()
-        
 
         print("configurações salvas")
 
