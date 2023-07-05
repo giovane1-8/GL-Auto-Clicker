@@ -1,1 +1,80 @@
-[{"nome": "Preset 2asdasdasd", "eventos": [{"tipo": "tecla", "acao": "pressionar", "tecla": "b", "duracao_pressao": 0.1, "tempo_espera": 0.3}, {"tipo": "mouse", "acao": "click", "botao": "botao_meio", "posicao": [500, 600]}]}, {"nome": "teste", "eventos": [{"tipo": "mouse", "acao": "pressionar", "botao": "botao_esquerdo", "posicao": [100, 200], "tempo_espera": 0.5}, {"tipo": "tecla", "acao": "pressionar", "tecla": "a", "duracao_pressao": 0.2, "tempo_espera": 1.0}, {"tipo": "mouse", "acao": "pressionar", "botao": "botao_direito", "posicao": [300, 400]}]}]
+[
+  {
+    "nome": "Teste teclado",
+    "eventos": [
+      {
+        "tipo": "tecla",
+        "acao": "pressionar",
+        "tecla": "g",
+        "tempo_iniciar": 0.1
+      },
+      {
+        "tipo": "tecla",
+        "acao": "pressionar",
+        "tecla": "i",
+        "tempo_iniciar": 0.1
+      },
+      {
+        "tipo": "tecla",
+        "acao": "soltar",
+        "tecla": "g",
+        "tempo_iniciar": 0.1
+      },
+      {
+        "tipo": "tecla",
+        "acao": "soltar",
+        "tecla": "i",
+        "tempo_iniciar": 0.1
+      },
+      {
+        "tipo": "tecla",
+        "acao": "pressionar",
+        "tecla": "o",
+        "tempo_iniciar": 0.1
+      },
+      {
+        "tipo": "tecla",
+        "acao": "soltar",
+        "tecla": "o",
+        "tempo_iniciar": 0.1
+      }
+    ]
+  },
+  {
+    "nome": "Teste mouse",
+    "eventos": [
+      {
+        "tipo": "mouse",
+        "acao": "pressionar",
+        "x": 200,
+        "y": 40,
+        "botao": "esquerdo",
+        "tempo_iniciar": 2
+      },
+      {
+        "tipo": "mouse",
+        "acao": "soltar",
+        "x": 233,
+        "y": 918,
+        "botao": "esquerdo",
+        "tempo_iniciar": 2
+      },
+      {
+        "tipo": "mouse",
+        "acao": "pressionar",
+        "x": 233,
+        "y": 918,
+        "botao": "esquerdo",
+        "tempo_iniciar": 2
+      },
+      {
+        "tipo": "mouse",
+        "acao": "soltar",
+        "x": 200,
+        "y": 40,
+        "botao": "esquerdo",
+        "tempo_iniciar": 2
+      }
+    ]
+  }
+]

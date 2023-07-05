@@ -7,8 +7,9 @@ PresetModel = importlib.import_module("Model.Preset", package=parent_dir)
 
 
 class PresetsController(object):
-    def __int__(self):
-        pass
+    def __init__(self):
+        self.is_runing = False
+        self.is_recording = False
 
     def initPresets(self):
         with open("Model/util/presets.json") as file:
@@ -32,3 +33,15 @@ class PresetsController(object):
             lista_para_arquivo.append(x.to_dictionary())
         with open("Model/util/presets.json", "w") as outfile:
             json.dump(lista_para_arquivo, outfile)
+
+    def run_preset(self, preset, qt_repetir, repetir_continuamente):
+        self.is_runing = not self.is_runing
+        if repetir_continuamente:
+            while self.is_runing:
+                preset.run()
+        else:
+            for _ in range(qt_repetir):
+                preset.run()
+
+    def record_preset(self, preset):
+        pass

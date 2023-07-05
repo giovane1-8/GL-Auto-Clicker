@@ -18,5 +18,27 @@ class ConfigsController():
         except:
             return key[0].name.upper()
 
-    def save_config(self):
-        pass
+
+    def start_keyboard_listener(self, callback_preset_name_return):
+
+        self.listener = keyboard.Listener(on_press=lambda key: self.on_key_press(key, callback_preset_name_return()))
+        self.listener.start()
+
+    def stop_keyboard_listener(self):
+        if self.listener:
+            self.listener.stop()
+
+    def on_key_press(self, key, preset):
+        try:
+            if isinstance(key.char, str):
+                key = key.char
+        except:
+            key = key.name.upper()
+
+        if key == self.keys["presets-keys"]["iniciar"]:
+            if(self.is_execultando):
+                preset.stop()
+
+            print("iniciar preset")
+        elif key == self.keys["presets-keys"]["gravar"]:
+            print("Gravando preset")
