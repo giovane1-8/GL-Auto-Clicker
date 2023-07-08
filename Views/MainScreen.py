@@ -38,10 +38,14 @@ class MainScreen:
     def init_componentes(self):
         self.colocar_widgets()
         self.colocar_presets()
+        self.presetsController.start_keyboard_listener(self.model_configs.keys, lambda: self.presetsInstances[
+            self.presets.index(self.var_option_menu.get())])
+        """
         self.model_configs.start_keyboard_listener(self.presetsController.run_preset,
                                                    self.presetsController.record_preset,
                                                    lambda: self.presetsInstances[
                                                        self.presets.index(self.var_option_menu.get())])
+        """
         # lambda: self.presetsInstances[self.presets.index(self.var_option_menu.get())])
 
     def atualizar_all_widgets(self):
@@ -59,8 +63,9 @@ class MainScreen:
                    command=lambda: print("TESTE")).grid(column=0, row=0)
 
         self.button_executar.set(self.model_configs.keys["presets-keys"]["iniciar"])
-        ttk.Button(frm, textvariable=self.button_executar, command=lambda: print(
-            "Executando comandos")).grid(column=1, row=0)
+        ttk.Button(frm, textvariable=self.button_executar, command=lambda: self.presetsController.run_preset(
+            self.presetsInstances[self.presets.index(self.var_option_menu.get())],
+            self.model_configs.keys["qt_repetir"], self.model_configs.keys["repetir"])).grid(column=1, row=0)
 
         ttk.Button(frm, text="Configurações",
                    command=self.janela_configuracoes).grid(column=2, row=0, sticky=SE, padx=(130, 2))
@@ -143,7 +148,7 @@ class MainScreen:
             self.atualizar_all_widgets()
 
     def janela_configuracoes(self):
-        self.model_configs.stop_keyboard_listener()
+        self.presetsController.stop_keyboard_listener()
         janela_configs = Configs(self.model_configs, self.main_screen)
         janela_configs.janela_configuracoes()
 
@@ -152,10 +157,8 @@ class MainScreen:
                 self.model_configs.keys["presets-keys"]["iniciar"])
             self.button_gravar.set(self.model_configs.keys["presets-keys"]["gravar"])
             janela_configs.child_window.unbind("<Destroy>")
-            self.model_configs.start_keyboard_listener(self.presetsController.run_preset,
-                                                       self.presetsController.record_preset,
-                                                       lambda: self.presetsInstances[
-                                                           self.presets.index(self.var_option_menu.get())])
+            self.presetsController.start_keyboard_listener(self.model_configs.keys, lambda: self.presetsInstances[
+                self.presets.index(self.var_option_menu.get())])
             # self.model_configs.start_keyboard_listener(lambda: self.presetsInstances[self.presets.index(self.var_option_menu.get())])
 
         janela_configs.child_window.bind("<Destroy>", atualizar_botoes)
