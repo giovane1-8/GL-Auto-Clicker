@@ -1,4 +1,6 @@
 from Views.Configs import *
+from pynput import keyboard
+from threading import Thread
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ConfigsModel = importlib.import_module("Model.Configs", package=parent_dir)
@@ -11,6 +13,9 @@ PresetModel = importlib.import_module("Model.Preset", package=parent_dir)
 
 class MainScreen:
     def __init__(self, master):
+        # propriedades
+        self.listener_keyboard = None
+
         # classes Controllers
         self.presetsController = PresetsController.PresetsController()
         self.configsController = ConfigsController.ConfigsController()
@@ -35,12 +40,35 @@ class MainScreen:
         # carrega as janelas
         self.init_componentes()
 
+    def on_key_press_thread(self, key, keys, preset):
+        thread = Thread(target=self.presetsController.on_key_press, args=(key, keys, preset))
+        thread.start()
+
+    def on_key_press_callback(self, key):
+        preset = self.presetsInstances[self.presets.index(self.var_option_menu.get())]
+        thread = Thread(target=self.on_key_press_thread, args=(key, self.model_configs.keys, preset))
+        thread.start()
+
+    def event_on_key_press(self):
+        self.listener_keyboard = keyboard.Listener(on_press=self.on_key_press_callback)
+        self.listener_keyboard.start()
+
+    def stop(self):
+        self.presetsController.stop()
+        if self.listener_keyboard:
+            self.listener_keyboard.stop()
+
+    def stop_keyboard_listener(self):
+        if self.listener_keyboard:
+            self.listener_keyboard.stop()
+
     def init_componentes(self):
         self.colocar_widgets()
         self.colocar_presets()
-        self.presetsController.start_keyboard_listener(self.model_configs.keys, lambda: self.presetsInstances[
+        self.event_on_key_press()
+        """self.presetsController.start_keyboard_listener(self.model_configs.keys, lambda: self.presetsInstances[
             self.presets.index(self.var_option_menu.get())])
-        """
+        
         self.model_configs.start_keyboard_listener(self.presetsController.run_preset,
                                                    self.presetsController.record_preset,
                                                    lambda: self.presetsInstances[
@@ -148,7 +176,7 @@ class MainScreen:
             self.atualizar_all_widgets()
 
     def janela_configuracoes(self):
-        self.presetsController.stop_keyboard_listener()
+        self.stop_keyboard_listener()
         janela_configs = Configs(self.model_configs, self.main_screen)
         janela_configs.janela_configuracoes()
 
@@ -157,8 +185,7 @@ class MainScreen:
                 self.model_configs.keys["presets-keys"]["iniciar"])
             self.button_gravar.set(self.model_configs.keys["presets-keys"]["gravar"])
             janela_configs.child_window.unbind("<Destroy>")
-            self.presetsController.start_keyboard_listener(self.model_configs.keys, lambda: self.presetsInstances[
-                self.presets.index(self.var_option_menu.get())])
-            # self.model_configs.start_keyboard_listener(lambda: self.presetsInstances[self.presets.index(self.var_option_menu.get())])
+
+            self.event_on_key_press()
 
         janela_configs.child_window.bind("<Destroy>", atualizar_botoes)

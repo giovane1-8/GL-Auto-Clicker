@@ -1,6 +1,6 @@
 import time
 from pynput import keyboard, mouse
-
+import asyncio
 
 class Preset(object):
 
@@ -11,26 +11,10 @@ class Preset(object):
         self.mouse = mouse.Controller()
         self.start_time = None
 
+
     def to_dictionary(self):
         return dict(nome=self.nome, eventos=self.eventos)
 
-    def run(self):
-        for event in self.eventos:
-            time.sleep(event["tempo_iniciar"])
-            if event["tipo"] == "tecla":
-                if event["acao"] == "pressionar":
-                    self.keyboard.press(event["tecla"])
-                elif event["acao"] == "soltar":
-                    self.keyboard.release(event["tecla"])
-            elif event["tipo"] == "mouse":
-                if event["acao"] == "pressionar":
-                    self.mouse.position = (event["x"], event["y"])
-                    botao = self._get_mouse_button(event["botao"])
-                    self.mouse.press(botao)
-                elif event["acao"] == "soltar":
-                    self.mouse.position = (event["x"], event["y"])
-                    botao = self._get_mouse_button(event["botao"])
-                    self.mouse.release(botao)
 
     def add_key_press(self, key, stop_key):
         try:
