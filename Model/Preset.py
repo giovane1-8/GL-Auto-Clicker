@@ -1,8 +1,8 @@
 import time
 from pynput import keyboard, mouse
-import asyncio
 
-class Preset(object):
+
+class Preset:
 
     def __init__(self, nome, events):
         self.nome = nome
@@ -11,10 +11,8 @@ class Preset(object):
         self.mouse = mouse.Controller()
         self.start_time = None
 
-
     def to_dictionary(self):
         return dict(nome=self.nome, eventos=self.eventos)
-
 
     def add_key_press(self, key):
         try:
@@ -40,8 +38,6 @@ class Preset(object):
                  "tempo_iniciar": self.get_elapsed_time()}
         print(event)
         self.eventos.append(event)
-
-
 
     def get_elapsed_time(self):
         if self.start_time is None:

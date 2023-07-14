@@ -1,19 +1,15 @@
 from tkinter import *
 from tkinter import ttk, messagebox
-import importlib
-import os
 
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ConfigsController = importlib.import_module(
-    "Controller.ConfigsController", package=parent_dir)
+from Controller.ConfigsController import ConfigsController
 
 
-class Configs(object):
+class Configs:
     def __init__(self, configs, mainScreen):
         self.configs = configs
         self.main_screen = mainScreen
         self.buttom_save = object
-        self.configsController = ConfigsController.ConfigsController()
+        self.configsController = ConfigsController()
 
     # funcao abre uma janela filha de main_screen de configurações
 

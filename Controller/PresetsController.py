@@ -1,16 +1,10 @@
-import importlib
 import json
-import os
 import time
-
 from pynput.keyboard import Key
 from pynput import keyboard, mouse
+from Model.Preset import Preset
 
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PresetModel = importlib.import_module("Model.Preset", package=parent_dir)
-
-
-class PresetsController():
+class PresetsController:
     def __init__(self):
         self.is_running = False
         self.is_recording = False
@@ -65,7 +59,7 @@ class PresetsController():
         presets_instances = list()
 
         for x in presets:
-            p = PresetModel.Preset(x["nome"], x["eventos"])
+            p = Preset(x["nome"], x["eventos"])
             presets_instances.append(p)
 
             presets_name.append(x["nome"])

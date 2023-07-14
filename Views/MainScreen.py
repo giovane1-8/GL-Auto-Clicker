@@ -1,14 +1,11 @@
 from Views.Configs import *
-from pynput import keyboard
 from threading import Thread
+from pynput import keyboard
 
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ConfigsModel = importlib.import_module("Model.Configs", package=parent_dir)
-ConfigsController = importlib.import_module(
-    "Controller.ConfigsController", package=parent_dir)
-PresetsController = importlib.import_module(
-    "Controller.PresetsController", package=parent_dir)
-PresetModel = importlib.import_module("Model.Preset", package=parent_dir)
+from Model.Configs import Configs as ConfigsModel
+from Model.Preset import Preset as PresetModel
+from Controller.PresetsController import PresetsController
+from Controller.ConfigsController import ConfigsController
 
 
 class MainScreen:
@@ -17,12 +14,12 @@ class MainScreen:
         self.listener_keyboard = None
 
         # classes Controllers
-        self.presetsController = PresetsController.PresetsController()
-        self.configsController = ConfigsController.ConfigsController()
+        self.presetsController = PresetsController()
+        self.configsController = ConfigsController()
 
         # classes Models
         self.presets, self.presetsInstances = self.presetsController.initPresets()
-        self.model_configs = ConfigsModel.Configs()
+        self.model_configs = ConfigsModel()
 
         # criando janela principal
         self.main_screen = master
@@ -168,7 +165,7 @@ class MainScreen:
                                 message="Mude o nome de 'New Preset'")
         except ValueError:
             self.presets.append("New Preset")
-            self.presetsInstances.append(PresetModel.Preset("New Preset", []))
+            self.presetsInstances.append(PresetModel("New Preset", []))
             self.atualizar_all_widgets()
 
     def janela_configuracoes(self):

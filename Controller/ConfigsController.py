@@ -1,7 +1,5 @@
 from pynput.keyboard import Listener
-
-
-class ConfigsController():
+class ConfigsController:
     def get_press_key(self):
         key = ["F3"]
 
@@ -17,4 +15,3 @@ class ConfigsController():
                 return -1
         except:
             return key[0].name.upper()
-
