@@ -13,7 +13,8 @@ class PresetsController():
     def __init__(self):
         self.is_running = False
         self.is_recording = False
-        self.listener = None
+        self._listener_keyboard = None
+        self._listener_mouse = None
 
     def initPresets(self):
         with open("Model/util/presets.json") as file:
@@ -61,23 +62,23 @@ class PresetsController():
     def run_preset(self, preset, qt_repetir, repetir_continuamente):
         self.is_running = True
         while repetir_continuamente:
+            if not self.is_running:
+                break
             self.run_eventos(preset)
         for _ in range(qt_repetir):
+            if not self.is_running:
+                break
             self.run_eventos(preset)
 
-    def record_preset(self, preset, stop_key):
-        self.stop_keyboard_listener()
+    def record_preset(self, preset):
+        self.is_recording = True
         preset.eventos = []
-        with mouse.Listener(on_click=preset.add_mouse_press) as mouse_listener:
-            with keyboard.Listener(on_press=lambda key: preset.add_key_press(key, stop_key),
-                                   on_release=preset.add_key_release) as keyboard_listener:
-                keyboard_listener.join()
-                mouse_listener.stop()
-                mouse_listener.join()
 
-        preset.eventos = preset.eventos[1:]
+        self._listener_mouse = mouse.Listener(on_click=preset.add_mouse_press)
+        self._listener_keyboard = keyboard.Listener(on_press=preset.add_key_press, on_release=preset.add_key_release)
 
-        print(preset.eventos)
+        self._listener_mouse.start()
+        self._listener_keyboard.start()
 
     def on_key_press(self, key, keys, preset):
         try:
@@ -87,14 +88,20 @@ class PresetsController():
             key = key.name.upper()
 
         if key == keys["presets-keys"]["iniciar"]:
-
+            if self.is_recording:
+                self.is_recording = False
             if not self.is_running:
                 self.run_preset(preset, keys["qt_repetir"], keys["repetir"])
             else:
                 self.is_running = False
 
-
-
         elif key == keys["presets-keys"]["gravar"]:
-            print("Gravando preset")
-            self.record_preset(preset, keys["presets-keys"]["gravar"])
+            if self.is_running:
+                self.is_running = False
+            if not self.is_recording:
+                self.record_preset(preset)
+            else:
+                self._listener_mouse.stop()
+                self._listener_keyboard.stop()
+                preset.eventos = preset.eventos[1:]
+                preset.eventos = preset.eventos[:len(preset.eventos)-1]

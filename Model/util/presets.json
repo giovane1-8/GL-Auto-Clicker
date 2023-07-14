@@ -5,32 +5,32 @@
       {
         "tipo": "mouse",
         "acao": "pressionar",
-        "x": 944,
-        "y": 27,
+        "x": 638,
+        "y": 26,
         "botao": "left",
-        "tempo_iniciar": 0.06
+        "tempo_iniciar": 1.26
       },
       {
         "tipo": "mouse",
         "acao": "soltar",
-        "x": 944,
-        "y": 27,
+        "x": 638,
+        "y": 26,
         "botao": "left",
-        "tempo_iniciar": 0.06
+        "tempo_iniciar": 0.09
       },
       {
         "tipo": "mouse",
         "acao": "pressionar",
-        "x": 1184,
-        "y": 20,
+        "x": 884,
+        "y": 19,
         "botao": "left",
-        "tempo_iniciar": 0.7
+        "tempo_iniciar": 1.28
       },
       {
         "tipo": "mouse",
         "acao": "soltar",
-        "x": 1184,
-        "y": 20,
+        "x": 884,
+        "y": 19,
         "botao": "left",
         "tempo_iniciar": 0.08
       }

@@ -28,7 +28,7 @@ class MainScreen:
         self.main_screen = master
 
         # Configurações da janela principal
-        # self.main_screen.geometry("410x180")  # definindo tamanho da janela
+        # self.main_screen.geometry("410x180")
         self.main_screen.resizable(False, False)  # bloqueando redimensionamento
         self.main_screen.title("AutoClickGL")  # mudando titulo
 
@@ -40,17 +40,13 @@ class MainScreen:
         # carrega as janelas
         self.init_componentes()
 
-    def on_key_press_thread(self, key, keys, preset):
-        thread = Thread(target=self.presetsController.on_key_press, args=(key, keys, preset))
-        thread.start()
-
-    def on_key_press_callback(self, key):
+    def on_key_press_thread(self, key):
         preset = self.presetsInstances[self.presets.index(self.var_option_menu.get())]
-        thread = Thread(target=self.on_key_press_thread, args=(key, self.model_configs.keys, preset))
+        thread = Thread(target=self.presetsController.on_key_press, args=(key, self.model_configs.keys, preset))
         thread.start()
 
     def event_on_key_press(self):
-        self.listener_keyboard = keyboard.Listener(on_press=self.on_key_press_callback)
+        self.listener_keyboard = keyboard.Listener(on_press=self.on_key_press_thread)
         self.listener_keyboard.start()
 
     def stop(self):

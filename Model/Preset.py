@@ -16,15 +16,13 @@ class Preset(object):
         return dict(nome=self.nome, eventos=self.eventos)
 
 
-    def add_key_press(self, key, stop_key):
+    def add_key_press(self, key):
         try:
             if isinstance(key.char, str):
                 key = key.char
         except:
             key = key.name.upper()
         print(key)
-        if key == stop_key:
-            return False
         event = {"tipo": "tecla", "acao": "pressionar", "tecla": key, "tempo_iniciar": self.get_elapsed_time()}
         self.eventos.append(event)
 
@@ -34,7 +32,6 @@ class Preset(object):
                 key = key.char
         except:
             key = key.name.upper()
-
         event = {"tipo": "tecla", "acao": "soltar", "tecla": key, "tempo_iniciar": self.get_elapsed_time()}
         self.eventos.append(event)
 
