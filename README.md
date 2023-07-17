@@ -15,7 +15,7 @@ O GL Auto Clicker é um software de código aberto que oferece funcionalidade de
 
 ## Pré-requisitos
 
-- Sistema operacional: Windows, macOS
+- Sistema operacional: Windows, macOS, Linux ([Consulte Limitações dos OS])(https://pynput.readthedocs.io/en/latest/limitations.html)
 - Python 3.7 ou superior.
 - Bibliotecas Python adicionais (listadas no arquivo requirements.txt).
 

@@ -53,7 +53,7 @@ class PresetsController:
         self.release_all_keys()
 
     def initPresets(self):
-        with open("Model/util/presets.json") as file:
+        with open("util/presets.json") as file:
             presets = list(json.load(file))
         presets_name = list()
         presets_instances = list()
@@ -72,7 +72,7 @@ class PresetsController:
         lista_para_arquivo = list()
         for x in presets_objects:
             lista_para_arquivo.append(x.to_dictionary())
-        with open("Model/util/presets.json", "w") as outfile:
+        with open("util/presets.json", "w") as outfile:
             json.dump(lista_para_arquivo, outfile)
 
     def run_eventos(self, preset):

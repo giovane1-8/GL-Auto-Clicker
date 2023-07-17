@@ -7,9 +7,9 @@ class Configs:
         self.get()
 
     def save(self):
-        with open("Model/util/configs.json", "w") as outfile:
+        with open("util/configs.json", "w") as outfile:
             json.dump(self.keys, outfile)
 
     def get(self):
-        with open("Model/util/configs.json") as file:
+        with open("util/configs.json") as file:
             self.keys = json.load(file)
